@@ -1,0 +1,3 @@
+RE1: '^bcdefghij$', string: 'abcdefghi', cost: 2, match dist: 2
+RE2: '^xcdefghij$', string: 'abcdefghi', cost: 2, match dist: -1
+RE3: '^xcdefghij$', string: 'abcdefghi', cost: 2, match dist: -1
