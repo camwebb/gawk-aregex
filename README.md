@@ -3,7 +3,8 @@
 Gawk extension for approximate regex (fuzzy) matching, using the TRE
 regex library from the TRE library (https://laurikari.net/tre/).
 
-For documentation and example usage, please see the man page.
+Provides an `aregex()` function in `gawk`. For documentation of this
+function and example usage, please see the [man](doc/aregex.3am) page.
 
 To install:
 
