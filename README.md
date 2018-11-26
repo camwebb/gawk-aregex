@@ -20,7 +20,7 @@ later be incorporated into combined
    header files (`gawkapi.h` and `tre/tre.h`) can be found by the
    compiler. Add `-Ldir` and `Idir` arguments to `gcc` if needed.
  * Compile with `make`
- * Test with `make test`
+ * Test with `make check`
  * Set `PREFIX` in `Makefile`. Install with `make install`
 
 ### Alternative installation
