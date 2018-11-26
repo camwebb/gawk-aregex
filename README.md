@@ -13,9 +13,9 @@ later be incorporated into combined
 
 ## Installation
 
- * (Install gawk, version > 4.0)
- * Install [gawkextlib](http://gawkextlib.sourceforge.net/) ([AUR](https://aur.archlinux.org/packages/gawkextlib/), [Fedora](https://apps.fedoraproject.org/packages/gawkextlib-devel))
- * Install [TRE](https://laurikari.net/tre/) ([Arch](https://www.archlinux.org/packages/community/x86_64/tre/), [Fedora](https://apps.fedoraproject.org/packages/tre-devel))
+ * (Install gawk, version 4.2+)
+ * Install [gawkextlib](http://gawkextlib.sourceforge.net/) ([AUR](https://aur.archlinux.org/packages/gawkextlib/), [Fedora](https://apps.fedoraproject.org/packages/gawkextlib-devel)). Tested with version 1.0.4.
+ * Install [TRE](https://laurikari.net/tre/) ([Arch](https://www.archlinux.org/packages/community/x86_64/tre/), [Fedora](https://apps.fedoraproject.org/packages/tre-devel)). Tested with version 0.8.0.
  * Make sure the libraries (`libgawkextlib.so` and `libtre.so`) and
    header files (`gawkapi.h` and `tre/tre.h`) can be found by the
    compiler. Add `-Ldir` and `Idir` arguments to `gcc` if needed.
