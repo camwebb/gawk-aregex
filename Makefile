@@ -4,10 +4,10 @@ PREFIX = /usr/local
 aregex.so: aregex.c
 	gcc -shared -lgawkextlib -ltre -Wall -g -O2 -fPIC -o aregex.so aregex.c
 
-check: aregex.so test_aregex.awk test_aregex.ok
-	gawk -f test_aregex.awk
+check: aregex.so test/test_aregex.awk test/test_aregex.ok
+	gawk -f test/test_aregex.awk
 	echo "  Passing result:"
-	cat test_aregex.ok
+	cat test/test_aregex.ok
 
 install: aregex.so doc/aregex.3am
 	mkdir -p $(PREFIX)/lib/gawk
