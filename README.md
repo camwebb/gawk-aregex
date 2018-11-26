@@ -1,7 +1,7 @@
 # gawk-aregex
 
 Gawk extension for approximate regex (fuzzy) matching, using the TRE
-regex library from the TRE library (https://laurikari.net/tre/).
+regex library from the [TRE](https://laurikari.net/tre/) library.
 
 Provides an `aregex()` function in gawk. For documentation of this
 function and example usage, please see the [man](doc/aregex.3am) page.
@@ -17,12 +17,12 @@ later be incorporated into combined
  * Install [gawkextlib](http://gawkextlib.sourceforge.net/) ([AUR](https://aur.archlinux.org/packages/gawkextlib/), [Fedora](https://apps.fedoraproject.org/packages/gawkextlib-devel))
  * Install [TRE](https://laurikari.net/tre/) ([Arch](https://www.archlinux.org/packages/community/x86_64/tre/), [Fedora](https://apps.fedoraproject.org/packages/tre-devel))
  * Make sure the libraries (`libgawkextlib.so` and `libtre.so`) and
-   header files (`gawkapi.h` and `tre/tre.h`) can be found my the
+   header files (`gawkapi.h` and `tre/tre.h`) can be found by the
    compiler. Add `-Ldir` and `Idir` arguments to `gcc` if needed.
  * Compile with `make`
  * Test with `gawk -f test_aregex.awk`. See file for expected results.
 
-## Alternative installation
+### Alternative installation
 
 The file `aregex.c` can be easily incorporated into the standard
 gawkextlib build chain:
@@ -32,7 +32,7 @@ gawkextlib build chain:
       ./make_extension_directory.sh -g /.../local/bin/ -l /.../local/lib/ \
         -I aregex "Name" "email"
       cd aregex
-      cp -rf .../aregex.c .
+      cp -f .../aregex.c .
       # edit aregex.c, adding “#include "common.h"” at L.7
       # edit Makefile: “aregex_la_LIBADD = -lgawkextlib -ltre $(LTLIBINTL)”
       ./configure # --prefix=/.../local/ 
