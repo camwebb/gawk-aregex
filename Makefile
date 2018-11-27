@@ -1,5 +1,5 @@
 PREFIX = /usr/local
-BASE = amatch
+BASE = aregex
 
 $(BASE).so: $(BASE).c
 	gcc -shared -lgawkextlib -ltre -Wall -g -O2 -fPIC -o $(BASE).so $(BASE).c
