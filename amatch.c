@@ -1,5 +1,5 @@
 /*
- * aregex.c - Gawk extension to access the TRE approximate regex.
+ * amatch.c - Gawk extension to access the TRE approximate regex.
  * Copyright (C) 2018 Cam Webb, <cw@camwebb.info>
  * Distributed under the GNU Pulbic Licence v3
  */
@@ -19,8 +19,8 @@ static const gawk_api_t *api;	/* for convenience macros to work */
 static awk_ext_id_t ext_id;
 int plugin_is_GPL_compatible;
 
-// Main aregex() function definition
-static awk_value_t * do_aregex(int nargs, awk_value_t *result, \
+// Main amatch() function definition
+static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
                             struct awk_ext_func *unused)
 {
   // Variables for reading awk function's arguments
@@ -31,7 +31,7 @@ static awk_value_t * do_aregex(int nargs, awk_value_t *result, \
   
   // Read 3rd argument
   if (!get_argument(2, AWK_ARRAY, &costs)) {
-    fatal(ext_id, "aregex: 3rd argument must be present, and an array");
+    fatal(ext_id, "amatch: 3rd argument must be present, and an array");
   }
 
   // Read parameters for tre_regaexec()
@@ -61,15 +61,15 @@ static awk_value_t * do_aregex(int nargs, awk_value_t *result, \
 
   // If the string arguments (1st and 2nd) are read. Q: die, or return NULL?
   if (!get_argument(0, AWK_STRING, &re))
-    fatal(ext_id, "aregex: first parameter not found; must be a string");
+    fatal(ext_id, "amatch: first parameter not found; must be a string");
   if (!get_argument(1, AWK_STRING, &str))
-    fatal(ext_id, "aregex: second parameter not found; must be a string");
+    fatal(ext_id, "amatch: second parameter not found; must be a string");
   
   // Compile regex
   regex_t preg;
   tre_regcomp(&preg, re.str_value.str, REG_EXTENDED);
     
-  // Set approx aregex params
+  // Set approx amatch params
   regaparams_t params = { 0 };
   params.cost_ins   = paramv[0]; 
   params.cost_del   = paramv[1];
@@ -97,14 +97,14 @@ static awk_value_t * do_aregex(int nargs, awk_value_t *result, \
   sprintf(c2, "offset: %d", match.pmatch[2].rm_so); 
   warning(ext_id, c2);
   
-  // Set the do_aregex() return value depending on tre_regaexec() return:
+  // Set the do_amatch() return value depending on tre_regaexec() return:
   // Return cost (Levenshtein distance) if success, -1 if no match,
   if (treret == REG_NOMATCH) rval = -1;
   else rval = match.cost;
   // Catch a "mem. not. allocated" return from tre_regaexec()
   if (treret == REG_ESPACE) {
     warning(ext_id,                                                     \
-            "aregex: TRE err., mem. insufficient to complete the match.");
+            "amatch: TRE err., mem. insufficient to complete the match.");
     return make_null_string(result);
   }
 
@@ -113,11 +113,11 @@ static awk_value_t * do_aregex(int nargs, awk_value_t *result, \
   // Read the SUBSEP symbol
   awk_value_t subsep;
   if (!sym_lookup("SUBSEP", AWK_STRING, &subsep))
-    warning(ext_id, "aregex: Could not get SUBSEP from gawk.");
+    warning(ext_id, "amatch: Could not get SUBSEP from gawk.");
 
   // Read 4th argument
   if (!get_argument(3, AWK_ARRAY, &substr)) {
-    warning(ext_id, "aregex: 4th argument not present or not an array");
+    warning(ext_id, "amatch: 4th argument not present or not an array");
   }
   else clear_array(substr.array_cookie);
   
@@ -142,12 +142,12 @@ static awk_value_t * do_aregex(int nargs, awk_value_t *result, \
 
 static awk_ext_func_t func_table[] = \
     {
-     { "aregex", do_aregex, 3, 2, awk_false, NULL  },
+     { "amatch", do_amatch, 3, 2, awk_false, NULL  },
     };
 
 static awk_bool_t (*init_func)(void) = NULL;
 
 static const char *ext_version = "0.1";
 
-dl_load_func(func_table, aregex, "")
+dl_load_func(func_table, amatch, "")
 
