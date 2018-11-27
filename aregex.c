@@ -95,5 +95,5 @@ static awk_bool_t (*init_func)(void) = NULL;
 
 static const char *ext_version = "0.1";
 
-dl_load_func(func_table, fmatch, "")
+dl_load_func(func_table, aregex, "")
 
