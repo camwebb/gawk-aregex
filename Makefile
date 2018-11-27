@@ -1,16 +1,17 @@
 PREFIX = /usr/local
+BASE = amatch
 
-aregex.so: aregex.c
-	gcc -shared -lgawkextlib -ltre -Wall -g -O2 -fPIC -o aregex.so aregex.c
+$(BASE).so: $(BASE).c
+	gcc -shared -lgawkextlib -ltre -Wall -g -O2 -fPIC -o $(BASE).so $(BASE).c
 
-check: aregex.so test/test_aregex.awk test/test_aregex.ok
-	gawk -f test/test_aregex.awk
+check: $(BASE).so test/test_$(BASE).awk test/test_$(BASE).ok
+	gawk -f test/test_$(BASE).awk
 	echo "  Passing result:"
-	cat test/test_aregex.ok
+	cat test/test_$(BASE).ok
 
-install: aregex.so doc/aregex.3am
+install: $(BASE).so doc/$(BASE).3am
 	mkdir -p $(PREFIX)/lib/gawk
-	cp -f aregex.so $(PREFIX)/lib/gawk/.
+	cp -f $(BASE).so $(PREFIX)/lib/gawk/.
 	mkdir -p $(PREFIX)/share/man/man3
-	cp -f doc/aregex.3am $(PREFIX)/share/man/man3/.
+	cp -f doc/$(BASE).3am $(PREFIX)/share/man/man3/.
 
