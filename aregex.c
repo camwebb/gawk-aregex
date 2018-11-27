@@ -1,5 +1,5 @@
 /*
- * amatch.c - Gawk extension to access the TRE approximate regex.
+ * aregex.c - Gawk extension to access the TRE approximate regex.
  * Copyright (C) 2018 Cam Webb, <cw@camwebb.info>
  * Distributed under the GNU Pulbic Licence v3
  */
@@ -68,7 +68,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
     }
   }
 
-  // 3. Read the string and re arguments (1st and 2nd)
+  // 3. Read the string and regex arguments (1st and 2nd)
   awk_value_t re;
   awk_value_t str;
   if (!get_argument(0, AWK_STRING, &str))
@@ -81,7 +81,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
   tre_regcomp(&preg, re.str_value.str, REG_EXTENDED);
 
   // 5. Do the match
-  // Set approx amatch params
+  // 5a. Set approx amatch params
   regaparams_t params = { 0 };
   params.cost_ins   = paramv[0]; 
   params.cost_del   = paramv[1];
@@ -92,16 +92,16 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
   params.max_subst  = paramv[6];
   params.max_err    = paramv[7];
 
-  // Create necessary tre_ structure for details of match
+  // 5b. Create necessary tre_ structure for details of match
   regamatch_t match ;
   match.nmatch = NSUBMATCH; 
   match.pmatch = (regmatch_t *) malloc(NSUBMATCH * sizeof(regmatch_t));
   
-  // Do the approx regexp
+  // 5c. Do the approx regexp
   int treret;
   treret = tre_regaexec(&preg, str.str_value.str, &match, params, 0);
   
-  // Set the amatch() return value depending on tre_regaexec() return:
+  // 5d. Set the amatch() return value depending on tre_regaexec() return:
   // Return cost (Levenshtein distance) if success, -1 if no match,
   int rval;
   if (treret == REG_NOMATCH) rval = -1;
@@ -129,17 +129,34 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
     else clear_array(substr.array_cookie);
 
     // Hand the substrings over to the substring array
-    char outindex1[20];
-    char outval1[20];
-    awk_value_t outindex;
-    awk_value_t outval;
-    for (i = 1 ; i < match.nmatch; i++) {
-      if (match.pmatch[i].rm_so > 0) {
-        sprintf(outindex1, "%d", i);
-        sprintf(outval1, "%d %.*s", match.pmatch[i].rm_so+1, match.pmatch[i].rm_eo - match.pmatch[i].rm_so, str.str_value.str + match.pmatch[i].rm_so);
+    char outindexc[20];
+    char outvalc[20];
+    awk_value_t outindexp;
+    awk_value_t outvalp;
+    for (i = 0 ; i < match.nmatch; i++) {
+      if (match.pmatch[i].rm_so != -1) {
+        // Method 1:
+        // start
+        sprintf(outindexc, "%d%sstart", i, subsep.str_value.str);
+        sprintf(outvalc, "%d", match.pmatch[i].rm_so+1);
         set_array_element(substr.array_cookie,                          \
-                          make_const_string(outindex1, strlen(outindex1), &outindex), \
-                        make_const_string(outval1, strlen(outval1), &outval));
+                make_const_string(outindexc, strlen(outindexc), &outindexp),\
+                make_const_string(outvalc, strlen(outvalc), &outvalp));
+        // length
+        sprintf(outindexc, "%d%slength", i, subsep.str_value.str);
+        sprintf(outvalc, "%d", match.pmatch[i].rm_eo - match.pmatch[i].rm_so);
+        set_array_element(substr.array_cookie,                        \
+                make_const_string(outindexc, strlen(outindexc), &outindexp),\
+                make_const_string(outvalc, strlen(outvalc), &outvalp));
+        
+        // Method 2:
+        // sprintf(outindexc, "%d", i);
+        // sprintf(outvalc, "%d %.*s", match.pmatch[i].rm_so+1, 
+        //        match.pmatch[i].rm_eo - match.pmatch[i].rm_so, 
+        //        str.str_value.str + match.pmatch[i].rm_so);
+        // set_array_element(substr.array_cookie,                        
+        //         make_const_string(outindexc, strlen(outindexc), &outindexp),
+        //         make_const_string(outvalc, strlen(outvalc), &outvalp));
       }
     }
   }
