@@ -45,8 +45,7 @@ gawkextlib build chain:
 
 While the `amatch()` function is roughly equivalent to the gawk
 `match()` function, I chose not to return `[i,"start"]` position and
-`[i,"length"]` in the returned substring array (e.g., see [here](See:
-https://github.com/camwebb/gawk-aregex/blob/115e400dbe6446d3138c7da2fba6d461026cad8d/aregex.c)),
+`[i,"length"]` in the returned substring array (e.g., see [here](https://github.com/camwebb/gawk-aregex/blob/115e400dbe6446d3138c7da2fba6d461026cad8d/aregex.c)),
 but to return just the literal substring for each parenthetical
 match. Gawk is multibyte aware, and `match()` works in terms of
 characters, not bytes, but TRE seems not to be character-based. Using
