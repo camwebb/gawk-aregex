@@ -1,0 +1,17 @@
+String    : abcdễfbc
+RE        : ^a(bc)d(ễ)(f)$
+max_cost  : 6
+Match(2)  : 1
+Match(3)  : 1
+Match(4)  : 1
+Submatches: 
+   i  substr    pos  len
+   -  ------    ---  ---
+   0  abcdễfbc    1  8
+   1  bc          2  2
+   2  ễ           5  1
+   3  fbc         6  3
+cost      : 5
+num_ins   : 2
+num_del   : 0
+num_subst : 1

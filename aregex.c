@@ -39,7 +39,6 @@ int plugin_is_GPL_compatible;
 static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
                             struct awk_ext_func *unused)
 {
-  // Counter:
   int i;
   
   // 1. Set default costs
@@ -64,7 +63,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
     if (!get_argument(2, AWK_ARRAY, &costs))
       fatal(ext_id, "amatch: 3rd argument present, but could not be read.");
     hascostarr = 1;
-    
+
     char c[30];
     for (i = 0; i < 8; i++) {
       // Create an index for reading array
@@ -103,7 +102,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
   //   tre_regwcomp(&preg, rew, REG_EXTENDED); )
 
   // 5. Do the match
-  // 5a. Set approx amatch params
+  // 5a. Set approx match params
   regaparams_t params = { 0 };
   params.cost_ins   = paramv[0]; 
   params.cost_del   = paramv[1];
@@ -136,11 +135,12 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
   if (treret == REG_ESPACE) {
     warning(ext_id,                                                     \
             "amatch: TRE err., mem. insufficient to complete the match.");
+    free(match.pmatch);
     return make_null_string(result);
   }
 
   // 6. If there is a cost array, set some return values (if matched)
-  if ((hascostarr) && (rval > -1)) {
+  if ((hascostarr) && (rval)) {
     char matchcost[20]; // Single integers, max width ~= 10
     // cost
     del_array_element(costs.array_cookie,                           \
@@ -183,8 +183,14 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
     else clear_array(substr.array_cookie);
 
     // Hand the TRE substrings over to the gawk substring array
-    char outindexc[20];  
-    char outvalc[20]; // TODO! Dimension based on max length
+    char outindexc[20];
+    int maxsubsize = 0;
+    // Find max size of substring
+    for (i = 0; i < NSUBMATCH ; i++)
+      if (match.pmatch[i].rm_so != -1)
+        if (maxsubsize < match.pmatch[i].rm_eo - match.pmatch[i].rm_so)
+          maxsubsize = match.pmatch[i].rm_eo - match.pmatch[i].rm_so;
+    char outvalc[maxsubsize+1];
     awk_value_t outindexp;
     awk_value_t outvalp;
 
@@ -228,6 +234,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
       }
     }
   }
+  free(match.pmatch);
   return make_number(rval, result);
 }
 
@@ -245,4 +252,3 @@ static const char *ext_version = "0.1";
 
 dl_load_func(func_table, amatch, "")
 
-// TODO! Free malloc
