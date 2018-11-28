@@ -12,9 +12,11 @@ BEGIN {
   cost["cost_ins"] = 2
   cost["cost_del"] = 3
 
-  print "Match(2)  : " amatch(str, re)
-  print "Match(3)  : " amatch(str, re, cost)
-  print "Match(4)  : " amatch(str, re, cost, out)
+  print "Match sr  : " amatch(str, re)
+  print "Match src : " amatch(str, re, 6.1)
+  print "Match srcb: " amatch(str, re, 6, b), b[1] 
+  print "Match srC : " amatch(str, re, cost)
+  print "Match srCb: " amatch(str, re, cost, out)
 
   print "Submatches: "
   print "   i  substr    pos  len"

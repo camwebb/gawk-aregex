@@ -3,8 +3,9 @@
 Gawk extension for approximate regex (fuzzy) matching, using the TRE
 regex library from the [TRE](https://laurikari.net/tre/) library.
 
-Provides an `aregex()` function in gawk. For documentation of this
-function and example usage, please see the [man](doc/aregex.3am) page.
+Provides an `amatch()` function in gawk, roughly equivalent to
+`match()` in gawk. For documentation of this function and example
+usage, please see the [man](doc/aregex.3am) page.
 
 As of 2018-11-25, this gawk extension is a stand-alone release. It may
 later be incorporated into combined
@@ -34,24 +35,35 @@ gawkextlib build chain:
         -I aregex "Name" "email"
       cd aregex
       cp -f .../aregex.c .
-      # edit aregex.c, adding “#include "common.h"” at L.7
-      # edit Makefile: “aregex_la_LIBADD = -lgawkextlib -ltre $(LTLIBINTL)”
+      sed -i '7 i \#include "common.h"' aregex.c 
       ./configure # --prefix=/.../local/ 
+      sed -i 's/-lgawkextlib/-lgawkextlib -ltre/g' Makefile
       make
       make install
 
- * Program notes: 1. While the amatch() function is roughly equivalent
- * to the gawk match() function, I chose not to return [i,"start"]
- * position and [i,"length"] in the returned substring array, but to
- * return just the literal substring for each parenthetical
- * match. Gawk is multibyte aware, and match() works in terms of
- * characters, not bytes, but TRE is not character-based. Using the
- * 'wchar_t' versions of tre_regcomp and tre_regaexec does not help if
- * the input is a mix of single and multi-byte characters. A simple
- * routine must be used on the output array, if positions and lengths
- * of the substrings are needed.
+## A note on bytes and characters
 
-See: https://github.com/camwebb/gawk-aregex/blob/115e400dbe6446d3138c7da2fba6d461026cad8d/aregex.c
+While the `amatch()` function is roughly equivalent to the gawk
+`match()` function, I chose not to return `[i,"start"]` position and
+`[i,"length"]` in the returned substring array (e.g., see [here](See:
+https://github.com/camwebb/gawk-aregex/blob/115e400dbe6446d3138c7da2fba6d461026cad8d/aregex.c)),
+but to return just the literal substring for each parenthetical
+match. Gawk is multibyte aware, and `match()` works in terms of
+characters, not bytes, but TRE seems not to be character-based. Using
+the `wchar_t` versions of `tre_regcomp()` and `tre_regaexec()` does
+not help if the input is a mix of single and multi-byte characters.
+
+A simple routine must be used on the output array (`out`), if
+positions and lengths of the substrings are needed:
+
+      print "i", "substring", "posn", "length"
+      p = 1
+      for (i = 1; i < length(out); i++) {
+        idx = index(substr(str, p), out[i])
+        len = length(out[i])
+        print i, out[i], idx+p-1, len
+        p = p + idx + len
+      }
 
 ----
 

@@ -2,7 +2,7 @@ PREFIX = /usr/local
 BASE = aregex
 
 $(BASE).so: $(BASE).c
-	gcc -shared -lgawkextlib -ltre -Wall -g -O2 -fPIC -o $(BASE).so $(BASE).c
+	gcc -shared -lgawkextlib -ltre -Wall -Wextra -Wno-unused-parameter -Wmissing-prototypes -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -g -O2 -fPIC -o $(BASE).so $(BASE).c
 
 check: $(BASE).so test/test_$(BASE).awk test/test_$(BASE).ok
 	gawk -f test/test_$(BASE).awk

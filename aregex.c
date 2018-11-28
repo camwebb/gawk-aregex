@@ -23,9 +23,9 @@ int plugin_is_GPL_compatible;
 
 
 // Main amatch() function definition
-static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
-                            struct awk_ext_func *unused) {
-  int i;
+static awk_value_t * do_amatch(int nargs, awk_value_t *result,\
+                               struct awk_ext_func *unused) {
+  int i; 
   
   // 1. Set default costs
   const char *parami[8];
@@ -40,33 +40,43 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
   parami[7] = "max_err";    paramv[7] = DEFMAXCOST;
   
   // 2. Read 3rd, 'costs' argument, if present
+  //   (these variable declarations outside, because needed during output: )
   awk_value_t costs;
+  awk_value_t simplecost;
   awk_value_t costindex;
   awk_value_t costval;
   awk_bool_t hascostarr = 0;
   
   if (nargs > 2) {
-    // (Previous variable declarations outside, because needed during output)
-    if (!get_argument(2, AWK_ARRAY, &costs))
-      fatal(ext_id, "amatch: 3rd argument present, but could not be read.");
-    hascostarr = 1;
+    // if just a simple integer for 3rd argument:
+    if (get_argument(2, AWK_NUMBER, &simplecost)) {
+      paramv[3] = (int) simplecost.num_value;
+      paramv[4] = (int) simplecost.num_value;
+      paramv[5] = (int) simplecost.num_value;
+      paramv[6] = (int) simplecost.num_value;
+      paramv[7] = (int) simplecost.num_value;
+    }
+    else if (get_argument(2, AWK_ARRAY, &costs)) {
+      hascostarr = 1;
     
-    char c[30];
-    for (i = 0; i < 8; i++) {
-      // create an index for reading array
-      make_const_string(parami[i], strlen(parami[i]), &costindex);
-      // if there is an array element with that index
-      if (get_array_element(costs.array_cookie, &costindex, \
-                            AWK_STRING, &costval)) {
-        // update the cost value
-        paramv[i] = atoi(costval.str_value.str);
-        if (DEBUG) {
-          strcpy(c,"") ;
-          sprintf(c, "cost %s = %d", parami[i], atoi(costval.str_value.str));
-          warning(ext_id, c);
+      char c[30];
+      for (i = 0; i < 8; i++) {
+        // create an index for reading array
+        make_const_string(parami[i], strlen(parami[i]), &costindex);
+        // if there is an array element with that index
+        if (get_array_element(costs.array_cookie, &costindex,   \
+                              AWK_STRING, &costval)) {
+          // update the cost value
+          paramv[i] = atoi(costval.str_value.str);
+          if (DEBUG) {
+            strcpy(c,"") ;
+            sprintf(c, "cost %s = %d", parami[i], atoi(costval.str_value.str));
+            warning(ext_id, c);
+          }
         }
       }
     }
+    else fatal(ext_id, "amatch: 3rd argument present, but could not be read.");
   }
 
   // 3. Read the string and regex arguments (1st and 2nd)
@@ -100,7 +110,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
   params.max_subst  = paramv[6];
   params.max_err    = paramv[7];
 
-  // create necessary tre_ structure for details of match
+  // create necessary structure for details of match
   regamatch_t match ;
   match.nmatch = MAXNSUBMATCH; 
   match.pmatch = (regmatch_t *) malloc(MAXNSUBMATCH * sizeof(regmatch_t));
@@ -181,7 +191,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result, \
     awk_value_t outindexp;
     awk_value_t outvalp;
 
-    for (i = 0 ; i < match.nmatch; i++) {
+    for (i = 0 ; i < (int) match.nmatch; i++) {
       if (match.pmatch[i].rm_so != -1) {
         sprintf(outindexc, "%d", i);
         // ( "%d %.*s", match.pmatch[i].rm_so+1, ... gives position
