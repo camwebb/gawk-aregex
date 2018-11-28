@@ -1,9 +1,11 @@
 String    : abcdễfbc
 RE        : ^a(bc)d(ễ)(f)$
 max_cost  : 6
-Match(2)  : 1
-Match(3)  : 1
-Match(4)  : 1
+Match sr  : 1
+Match src : 1
+Match srcb: 1 bc
+Match srC : 1
+Match srCb: 1
 Submatches: 
    i  substr    pos  len
    -  ------    ---  ---

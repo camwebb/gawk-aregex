@@ -5,9 +5,9 @@ $(BASE).so: $(BASE).c
 	gcc -shared -lgawkextlib -ltre -Wall -Wextra -Wno-unused-parameter -Wmissing-prototypes -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -g -O2 -fPIC -o $(BASE).so $(BASE).c
 
 check: $(BASE).so test/test_$(BASE).awk test/test_$(BASE).ok
-	gawk -f test/test_$(BASE).awk
-	echo "  Passing result:"
-	cat test/test_$(BASE).ok
+	gawk -f test/test_$(BASE).awk > test/test_$(BASE).tmp
+	bash -c "if [ -z `diff test/test_$(BASE).ok test/test_$(BASE).tmp` ] ; then echo '** PASS **'; else echo '** FAIL **' ; fi "
+	rm -f test/test_$(BASE).tmp
 
 install: $(BASE).so doc/$(BASE).3am
 	mkdir -p $(PREFIX)/lib/gawk
