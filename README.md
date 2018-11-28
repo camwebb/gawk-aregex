@@ -40,6 +40,19 @@ gawkextlib build chain:
       make
       make install
 
+ * Program notes: 1. While the amatch() function is roughly equivalent
+ * to the gawk match() function, I chose not to return [i,"start"]
+ * position and [i,"length"] in the returned substring array, but to
+ * return just the literal substring for each parenthetical
+ * match. Gawk is multibyte aware, and match() works in terms of
+ * characters, not bytes, but TRE is not character-based. Using the
+ * 'wchar_t' versions of tre_regcomp and tre_regaexec does not help if
+ * the input is a mix of single and multi-byte characters. A simple
+ * routine must be used on the output array, if positions and lengths
+ * of the substrings are needed.
+
+See: https://github.com/camwebb/gawk-aregex/blob/115e400dbe6446d3138c7da2fba6d461026cad8d/aregex.c
+
 ----
 
 Cam Webb <cw@camwebb.info>, 2018-11-24
