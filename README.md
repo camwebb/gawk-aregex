@@ -3,9 +3,9 @@
 Gawk extension for approximate regex (fuzzy) matching, using the TRE
 regex library from the [TRE](https://laurikari.net/tre/) library (also [here](https://github.com/laurikari/tre)).
 
-Provides an `amatch()` function in gawk, roughly equivalent to
-`match()` in gawk. For documentation of this function and example
-usage, please see the [man](doc/aregex.md) page.
+Provides an `amatch()` function, roughly equivalent to the built-in
+`match()` function in gawk. For documentation of this function and
+example usage, please see the [man](doc/aregex.md) page.
 
 As of 2018-11-25, this gawk extension is a stand-alone release. It may
 later be incorporated into combined
@@ -22,7 +22,7 @@ later be incorporated into combined
    compiler. Add `-Ldir` and `Idir` arguments to `gcc` if needed.
  * Compile with `make`
  * Test with `make check`
- * Set `PREFIX` in `Makefile`. Install with `make install`
+ * Set install location `PREFIX` in `Makefile`. Install with `make install`
 
 ### Alternative installation
 
@@ -68,7 +68,7 @@ positions and lengths of the substrings are needed:
 
  * Ville Laurikari (@laurikari) for TRE
  * Arnold Robbins for maintaining Gawk
- * `gawkextlib` developers and the developers of other extensions for
+ * `gawkextlib` developers, and the developers of other extensions for
    their examples
  * Benjamin Eckel (@bhelx) for [this gist](https://gist.github.com/bhelx/1498622/e442385814e64625cc286ad3fa4ef9c0517ce785).
  * user sashoalm on StackOverflow for [this answer](https://stackoverflow.com/a/35200252/563709).

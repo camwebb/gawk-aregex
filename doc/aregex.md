@@ -49,8 +49,8 @@ slashes.
 ## Setting approximate match costs
 
 With only two arguments, the default maximum cost for the approximate
-match is set to 5, and other costs are set as below. The maximum cost
-may also be set by the user via an optional third parameter: either an
+match is set to 5 (and other costs are set as below). The maximum cost
+may also be set by the user via an optional **third argument**: either an
 integer (_cost_), or a member of a one-dimensional array (_costs_)
 indexed by `"max_cost"`. Setting maximum cost to 0 forces an exact
 regular expression match, as with Gawk’s _match()_.  Other members of
@@ -80,8 +80,8 @@ match and 0 on a failure to match.
 
 ## Obtaining match summary data 
 
-If a third array argument is provided to **amatch()**, and a match was
-successful, information about the match is return via (clearing and)
+If a **third array argument** is provided to **amatch()**, and a match was
+successful, information about the match is returned via (clearing and)
 filling members of the _costs_ array with these indexes:
 
 ```
@@ -100,11 +100,11 @@ If an array (or empty Gawk variable symbol) is provided as the
 cleared and filled with submatches corresponding to the parenthetical
 sub-expression in _regex_, with indexes _1...n_, up to a maximum of
 20. The array member indexed by _0_ will be the portion of _str_
-matched by the whole of _re_.
+matched by the whole of _regex_.
 
 **A note on bytes and characters**: While the **amatch()** function is
 roughly equivalent to the Gawk _match()_ function, submatches are not
-returned as in _match()_ via _[i,"start"]_ position and _[i,"length"]_
+returned as in _match()_, e.g. via _[i,"start"]_ position and _[i,"length"]_
 (see Gawk `man` page). Instead only the literal substring for each
 parenthetical match is given. Gawk is multibyte aware, and _match()_
 works in terms of characters, not bytes, but TRE is byte-based, not
