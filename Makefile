@@ -15,3 +15,5 @@ install: $(BASE).so doc/$(BASE).3am
 	mkdir -p $(PREFIX)/share/man/man3
 	cp -f doc/$(BASE).3am $(PREFIX)/share/man/man3/.
 
+man: doc/$(BASE).md
+	pandoc -s -t man -o doc/$(BASE).3am doc/$(BASE).md

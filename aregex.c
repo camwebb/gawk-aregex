@@ -12,7 +12,7 @@
 #include <gawkapi.h>
 #include <tre/tre.h>
 
-#define MAXNSUBMATCH 10 // Max Number of parenthetical substring matches
+#define MAXNSUBMATCH 20 // Max Number of parenthetical substring matches
 #define DEFMAXCOST 3    // Default max_cost for match 
 #define DEBUG 0         // Print debug info
 
