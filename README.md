@@ -41,7 +41,7 @@ gawkextlib build chain:
       make
       make install
 
-The `Makefile` in `sf_build` will do this.
+The [Makefile](sf_build/Makefile) in `sf_build` will do this.
 
 ## A note on bytes and characters
 
