@@ -14,6 +14,8 @@ all: ../aregex.c ../doc/aregex.3am ../test/aregex.awk ../test/aregex.ok
 	sed -i '7 i \#include "common.h"' gawkextlib-code/aregex/aregex.c
 	# cd gawkextlib-code/aregex && ./configure --prefix=/.../local/
 	cd gawkextlib-code/aregex && ./configure
+	sed -i 's/-lgawkextlib/-lgawkextlib -ltre/g' \
+	   gawkextlib-code/aregex/Makefile.am
 	sed -i 's/-lgawkextlib/-lgawkextlib -ltre/g' gawkextlib-code/aregex/Makefile
 	cd gawkextlib-code/aregex && make
 	cd gawkextlib-code/aregex && make check
