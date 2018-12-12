@@ -41,6 +41,8 @@ gawkextlib build chain:
       make
       make install
 
+The `Makefile` in `sf_build` will do this.
+
 ## A note on bytes and characters
 
 While the `amatch()` function is roughly equivalent to the gawk
