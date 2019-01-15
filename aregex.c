@@ -1,6 +1,6 @@
 /*
  * aregex.c - Gawk extension to access the TRE approximate regex.
- * Copyright (C) 2018 Cam Webb, <cw@camwebb.info>
+ * Copyright (C) 2018-9 Cam Webb, <cw@camwebb.info>
  * Distributed under the GNU Pulbic Licence v3
  */
 
@@ -23,8 +23,9 @@ int plugin_is_GPL_compatible;
 
 
 // Main amatch() function definition
-static awk_value_t * do_amatch(int nargs, awk_value_t *result,\
-                               struct awk_ext_func *unused) {
+static awk_value_t * do_amatch(int nargs, awk_value_t *result \
+                               , struct awk_ext_func *unused)
+{
   int i; 
   
   // 1. Set default costs
@@ -214,13 +215,12 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result,\
 // Gawkextlib boilerplate:
 
 static awk_ext_func_t func_table[] = \
-    {
-     { "amatch", do_amatch, 4, 2, awk_false, NULL  },
-    };
+  {
+    { "amatch", do_amatch, 4, 2, awk_false, NULL  },
+  };
 
 static awk_bool_t (*init_func)(void) = NULL;
 
 static const char *ext_version = "0.1";
 
 dl_load_func(func_table, amatch, "")
-
