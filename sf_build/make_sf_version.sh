@@ -6,7 +6,8 @@
 
 cd u-ctenolophon-gawkextlib
 
-# Make the new default new extension 
+# Make the new default new extension
+rm -rf aregex
 ./make_extension_directory.sh -I aregex "Cam Webb" "cw@camwebb.info"
 
 cd aregex
