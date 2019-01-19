@@ -1,15 +1,18 @@
+# Script to clone the forked SourceForge gawkextlib codebase, apply
+# changes from the github version (by copying files), build and test,
+# and prepare for merge request.
 
-# **Create the codebase**
+# 1. Create the codebase
 
 # git clone ssh://ctenolophon@git.code.sf.net/u/ctenolophon/gawkextlib \
 #    u-ctenolophon-gawkextlib
 
 cd u-ctenolophon-gawkextlib
 
-# Make the new default new extension
+# 2. Make the new default new extension
+
 rm -rf aregex
 ./make_extension_directory.sh -I aregex "Cam Webb" "cw@camwebb.info"
-
 cd aregex
 
 # **Modify files**
