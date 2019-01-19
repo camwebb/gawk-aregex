@@ -55,6 +55,7 @@ make check
 
 ## ** Test in clean repo **
 
+# D=`pwd`
 # cd /tmp/
 # git clone git://git.code.sf.net/u/ctenolophon/gawkextlib u-ctenolophon-gawkextlib
 # cd u-ctenolophon-gawkextlib/aregex/
@@ -64,6 +65,7 @@ make check
 # make check
 # cd ../..
 # rm -rf u-ctenolophon-gawkextlib/
+# cd $D
 
 ## ** Request merge **
 
