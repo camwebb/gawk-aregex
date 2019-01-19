@@ -141,7 +141,7 @@ BEGIN {
 # SEE ALSO
 
 The Gawk extension lib: https://sourceforge.net/projects/gawkextlib/
-TRE library: https://laurikari.net/tre/
+and TRE library: https://laurikari.net/tre/
 
 # AUTHORS
 

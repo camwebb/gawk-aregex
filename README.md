@@ -7,10 +7,9 @@ Provides an `amatch()` function, roughly equivalent to the built-in
 `match()` function in gawk. For documentation of this function and
 example usage, please see the [man](doc/aregex.md) page.
 
-As of 2018-11-25, this gawk extension is a stand-alone release. It may
-later be incorporated into combined
-[Gawkextlib](http://gawkextlib.sourceforge.net/) project, and appear
-[here](https://sourceforge.net/projects/gawkextlib/files/).
+As of 2019-01-18, this gawk extension is now incorporated into the
+combined [Gawkextlib](http://gawkextlib.sourceforge.net/) project, and
+appears [here](https://sourceforge.net/projects/gawkextlib/files/).
 
 ## Installation
 
