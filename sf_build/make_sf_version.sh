@@ -29,6 +29,10 @@ patch -i ../../aregex.c.patch aregex.c
 # Man page
 cp -f ../../../doc/aregex.3am doc
 
+# Web page
+cp -f ../../webTOC .
+git add webTOC
+
 # Test files
 cp -f ../../../test/aregex.awk test
 sed -i 's|./aregex.so|../.libs/aregex.so|g' test/aregex.awk
