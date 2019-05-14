@@ -1,29 +1,29 @@
-# Script to clone the forked SourceForge gawkextlib codebase, apply
+# Script to update SourceForge gawkextlib codebase, apply
 # changes from the github version (by copying files), build and test,
 # and prepare for merge request.
 
-# 1. Create the codebase
+# Define new version here:
 
+VERSION=1.0.1
+
+# Get new version of original repo
 rm -rf u-ctenolophon-gawkextlib
 git clone ssh://ctenolophon@git.code.sf.net/u/ctenolophon/gawkextlib \
-    u-ctenolophon-gawkextlib
+ u-ctenolophon-gawkextlib
 
-cd u-ctenolophon-gawkextlib
+cd u-ctenolophon-gawkextlib/
 
-# 2. Make the new default new extension
+git remote add upstream https://git.code.sf.net/p/gawkextlib/code
+git fetch upstream
+git checkout master
+git merge -m "auto" upstream/master
 
-rm -rf aregex
-./make_extension_directory.sh -I aregex "Cam Webb" "cw@camwebb.info"
-cd aregex
+cd aregex/
 
-# **Modify files**
+# Change build files:
+sed -E -i "s/\ [0-9]+\.[0-9]+\.[0-9]+/ $VERSION/g" configure.ac
 
-# Automake/autoconf, etc
-sed -i 's/-lgawkextlib/-lgawkextlib -ltre/g' Makefile.am
-sed -i 's/AC_GAWK_EXTENSION/AC_GAWK_EXTENSION\n\nAC_CHECK_LIB([tre], [tre_regaexec], [],[echo "The TRE regex library is required"; exit -1])/g' configure.ac
-sed -i 's/BuildRequires:    gcc/BuildRequires:    gcc\nBuildRequires:    tre-devel/g' packaging/gawk-aregex.spec.in
-
-# Main code
+# Change code files
 cp -f ../../../aregex.c .
 patch -i ../../aregex.c.patch aregex.c
 
@@ -32,7 +32,6 @@ cp -f ../../../doc/aregex.3am doc
 
 # Web page
 cp -f ../../webTOC .
-git add webTOC
 
 # Test files
 cp -f ../../../test/aregex.awk test
@@ -46,10 +45,10 @@ cp -f ../../../ChangeLog .
 # README
 cp -f ../../SF_README.md README
 
-## **Test**
+## Build
 
-automake
-autoconf
+autoreconf -i
+./configure 
 make
 make check
 
