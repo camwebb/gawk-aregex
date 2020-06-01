@@ -1,6 +1,8 @@
 2019-05-13  Cam Webb <cw@camwebb.info>
 	
 	* aregex.c (main): fixed major memory leak. Needed to add tre_regfree()
+	Found with: valgrind --tool=memcheck --leak-check=full gawk -f
+	test/aregex.awk
 
 2019-01-14  Cam Webb  <cw@camwebb.info>
 

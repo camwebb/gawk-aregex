@@ -42,6 +42,16 @@ gawkextlib build chain:
 
 The [Makefile](sf_build/Makefile) in `sf_build` will do this.
 
+### Windows users
+
+There is an up-to-date (version 5+) `gawk` for Windows at the
+[ezwinports](https://sourceforge.net/projects/ezwinports/) project. I
+looked briefly into cross-compiling `aregex.c` with
+`i686-w64-mingw32`, but this would require also cross-compiling TRE
+and gawkextlib, which is beyond me (given time available). Windows
+users will need to locate a Linux or Windows machine.
+
+
 ## A note on bytes and characters
 
 While the `amatch()` function is roughly equivalent to the gawk

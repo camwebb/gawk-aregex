@@ -1,0 +1,7 @@
+Changes in 1.0.1
+----------------
+- Fixed major memory leak. Needed to add tre_regfree()
+
+Version 1.0.0
+-------------
+- First version.

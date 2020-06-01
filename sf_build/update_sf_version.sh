@@ -42,6 +42,9 @@ cp -f ../../../test/aregex_b.ok test/aregex.ok
 # ChangeLog
 cp -f ../../../ChangeLog .
 
+# NEWS
+cp -f ../../SF_NEWS NEWS
+
 # README
 cp -f ../../SF_README.md README
 
