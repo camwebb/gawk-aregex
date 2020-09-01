@@ -113,8 +113,9 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
 
   // create necessary structure for details of match
   regamatch_t match ;
+  regmatch_t pmatch[MAXNSUBMATCH];
   match.nmatch = MAXNSUBMATCH;
-  match.pmatch = (regmatch_t *) malloc(MAXNSUBMATCH * sizeof(regmatch_t));
+  match.pmatch = &pmatch[0];
 
   // do the approx regexp itself!
   int treret;
@@ -132,7 +133,6 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   if (treret == REG_ESPACE) {
     warning(ext_id,                                                     \
             "amatch: TRE err., mem. insufficient to complete the match.");
-    free(match.pmatch);
     tre_regfree(&preg);
     return make_null_string(result);
   }
@@ -208,7 +208,6 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
     }
   }
 
-  free(match.pmatch);
   tre_regfree(&preg);
   return make_number(rval, result);
 }
