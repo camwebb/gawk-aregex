@@ -13,7 +13,7 @@
 #include <tre/tre.h>
 
 #define MAXNSUBMATCH 20 // Max Number of parenthetical substring matches
-#define DEFMAXCOST 5    // Default max_cost for match 
+#define DEFMAXCOST 5    // Default max_cost for match
 #define DEBUG 0         // Print debug info
 
 // Gawkextlib boilerplate:
@@ -26,8 +26,8 @@ int plugin_is_GPL_compatible;
 static awk_value_t * do_amatch(int nargs, awk_value_t *result \
                                , struct awk_ext_func *unused)
 {
-  int i; 
-  
+  int i;
+
   // 1. Set default costs
   const char *parami[8];
   int paramv[8];
@@ -39,7 +39,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   parami[5] = "max_ins";    paramv[5] = DEFMAXCOST;
   parami[6] = "max_subst";  paramv[6] = DEFMAXCOST;
   parami[7] = "max_err";    paramv[7] = DEFMAXCOST;
-  
+
   // 2. Read 3rd, 'costs' argument, if present
   //   (these variable declarations outside, because needed during output: )
   awk_value_t costs;
@@ -47,7 +47,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   awk_value_t costindex;
   awk_value_t costval;
   awk_bool_t hascostarr = 0;
-  
+
   if (nargs > 2) {
     // if just a simple integer for 3rd argument:
     if (get_argument(2, AWK_NUMBER, &simplecost)) {
@@ -59,7 +59,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
     }
     else if (get_argument(2, AWK_ARRAY, &costs)) {
       hascostarr = 1;
-    
+
       char c[30];
       for (i = 0; i < 8; i++) {
         // create an index for reading array
@@ -91,7 +91,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   // ( for wchar_t:
   //   wchar_t rew[] = L"";
   //   swprintf(rew, strlen(re.str_value.str), L"%ls", re.str_value.str); )
-  
+
   // 4. Compile regex
   regex_t preg;
   tre_regcomp(&preg, re.str_value.str, REG_EXTENDED);
@@ -102,7 +102,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   // 5. Do the match
   // set approx match params
   regaparams_t params = { 0 };
-  params.cost_ins   = paramv[0]; 
+  params.cost_ins   = paramv[0];
   params.cost_del   = paramv[1];
   params.cost_subst = paramv[2];
   params.max_cost   = paramv[3];
@@ -113,16 +113,16 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
 
   // create necessary structure for details of match
   regamatch_t match ;
-  match.nmatch = MAXNSUBMATCH; 
+  match.nmatch = MAXNSUBMATCH;
   match.pmatch = (regmatch_t *) malloc(MAXNSUBMATCH * sizeof(regmatch_t));
-  
+
   // do the approx regexp itself!
   int treret;
   treret = tre_regaexec(&preg, str.str_value.str, &match, params, 0);
 
   // ( for wchar_t:
   //   treret = tre_regawexec(&pregw, rew, &match, params, 0); )
-  
+
   // set the amatch() return value depending on tre_regaexec() return
   //   1 if success, 0 if no match
   int rval = 1;
@@ -169,11 +169,11 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
           make_const_string("num_subst", strlen("num_subst"), &costindex), \
           make_const_string(matchcost, strlen(matchcost), &costval));
   }
-  
+
   // 7. Set 4th argument array, for matched substrings, if present
   //    and if a match found
   if ((nargs == 4) && (rval)) {
-    awk_value_t substr; 
+    awk_value_t substr;
     // read 4th argument
     if (!get_argument(3, AWK_ARRAY, &substr)) {
       warning(ext_id, "amatch: Could not read 4th argument.");
@@ -201,13 +201,13 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
         sprintf(outvalc, "%.*s",                                 \
                 match.pmatch[i].rm_eo - match.pmatch[i].rm_so,   \
                 str.str_value.str + match.pmatch[i].rm_so);
-        set_array_element(substr.array_cookie,                        
+        set_array_element(substr.array_cookie,
           make_const_string(outindexc, strlen(outindexc), &outindexp), \
           make_const_string(outvalc, strlen(outvalc), &outvalp));
       }
     }
   }
-  
+
   free(match.pmatch);
   tre_regfree(&preg);
   return make_number(rval, result);
