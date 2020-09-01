@@ -3,7 +3,7 @@ BASE = aregex
 SHLIBEXT = .so
 
 $(BASE)$(SHLIBEXT): $(BASE).c
-	gcc -shared -lgawkextlib -ltre -Wall -Wextra -Wno-unused-parameter -Wmissing-prototypes -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -g -O2 -fPIC -o $@ $<
+	gcc $(CFLAGS) -shared -Wall -Wextra -Wno-unused-parameter -Wmissing-prototypes -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -g -O2 -fPIC -o $@ $< -lgawkextlib -ltre
 
 check: $(BASE)$(SHLIBEXT) test/$(BASE).awk test/$(BASE).ok
 	gawk -f test/$(BASE).awk > test/$(BASE).tmp
