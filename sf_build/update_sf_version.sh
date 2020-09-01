@@ -35,7 +35,7 @@ cp -f ../../webTOC .
 
 # Test files
 cp -f ../../../test/aregex.awk test
-sed -i 's|./aregex.so|../.libs/aregex.so|g' test/aregex.awk
+sed -i 's|./aregex|../.libs/aregex|g' test/aregex.awk
 # note: the gawkextlib test suite uses gawk with --characters-as-bytes
 cp -f ../../../test/aregex_b.ok test/aregex.ok
 
@@ -51,7 +51,7 @@ cp -f ../../SF_README.md README
 ## Build
 
 autoreconf -i
-./configure 
+./configure
 make
 make check
 
@@ -67,7 +67,7 @@ make check
 # git clone git://git.code.sf.net/u/ctenolophon/gawkextlib u-ctenolophon-gawkextlib
 # cd u-ctenolophon-gawkextlib/aregex/
 # autoreconf -i
-# ./configure 
+# ./configure
 # make
 # make check
 # cd ../..
