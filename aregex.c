@@ -196,40 +196,46 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
 
   // 6. If there is a cost array, set some return values (if a match)
   if ((hascostarr) && (rval)) {
+    int n;
     char matchcost[20]; // Single integers, max width ~= 10
+    #define COST_LEN       4
+    #define NUM_INS_LEN    7
+    #define NUM_DEL_LEN    7
+    #define NUM_SUBST_LEN  9
     // cost
     del_array_element(costs.array_cookie,                           \
-          make_const_string("cost", strlen("cost"), &costindex));
-    sprintf(matchcost, "%d", match.cost);
+          make_const_string("cost", COST_LEN, &costindex));
+    n = sprintf(matchcost, "%d", match.cost);
     set_array_element(costs.array_cookie, \
-          make_const_string("cost", strlen("cost"), &costindex), \
-          make_const_string(matchcost, strlen(matchcost), &costval));
+          make_const_string("cost", COST_LEN, &costindex), \
+          make_const_string(matchcost, n, &costval));
     // num_ins
     del_array_element(costs.array_cookie,                               \
-          make_const_string("num_ins", strlen("num_ins"), &costindex));
-    sprintf(matchcost, "%d", match.num_ins);
+          make_const_string("num_ins", NUM_INS_LEN, &costindex));
+    n = sprintf(matchcost, "%d", match.num_ins);
     set_array_element(costs.array_cookie, \
-          make_const_string("num_ins", strlen("num_ins"), &costindex), \
-          make_const_string(matchcost, strlen(matchcost), &costval));
+          make_const_string("num_ins", NUM_INS_LEN, &costindex), \
+          make_const_string(matchcost, n, &costval));
     // num_del
     del_array_element(costs.array_cookie,                               \
-          make_const_string("num_del", strlen("num_del"), &costindex));
-    sprintf(matchcost, "%d", match.num_del);
+          make_const_string("num_del", NUM_DEL_LEN, &costindex));
+    n = sprintf(matchcost, "%d", match.num_del);
     set_array_element(costs.array_cookie, \
-          make_const_string("num_del", strlen("num_del"), &costindex), \
-          make_const_string(matchcost, strlen(matchcost), &costval));
+          make_const_string("num_del", NUM_DEL_LEN, &costindex), \
+          make_const_string(matchcost, n, &costval));
     // num_subst
     del_array_element(costs.array_cookie,                               \
-          make_const_string("num_subst", strlen("num_subst"), &costindex));
-    sprintf(matchcost, "%d", match.num_subst);
+          make_const_string("num_subst", NUM_SUBST_LEN, &costindex));
+    n = sprintf(matchcost, "%d", match.num_subst);
     set_array_element(costs.array_cookie, \
-          make_const_string("num_subst", strlen("num_subst"), &costindex), \
-          make_const_string(matchcost, strlen(matchcost), &costval));
+          make_const_string("num_subst", NUM_SUBST_LEN, &costindex), \
+          make_const_string(matchcost, n, &costval));
   }
 
   // 7. Set 4th argument array, for matched substrings, if present
   //    and if a match found
   if ((nargs == 4) && (rval)) {
+    int n,m;
     awk_value_t substr;
     // read 4th argument
     if (!get_argument(3, AWK_ARRAY, &substr)) {
@@ -252,15 +258,15 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
 
     for (i = 0 ; i < (int) match.nmatch; i++) {
       if (match.pmatch[i].rm_so != -1) {
-        sprintf(outindexc, "%d", i);
+        n = sprintf(outindexc, "%d", i);
         // ( "%d %.*s", match.pmatch[i].rm_so+1, ... gives position
         //   by bytes, not by chars )
-        sprintf(outvalc, "%.*s",                                 \
+        m = sprintf(outvalc, "%.*s",                                 \
                 match.pmatch[i].rm_eo - match.pmatch[i].rm_so,   \
                 str.str_value.str + match.pmatch[i].rm_so);
         set_array_element(substr.array_cookie,
-          make_const_string(outindexc, strlen(outindexc), &outindexp), \
-          make_const_string(outvalc, strlen(outvalc), &outvalp));
+          make_const_string(outindexc, n, &outindexp), \
+          make_const_string(outvalc, m, &outvalp));
       }
     }
   }
