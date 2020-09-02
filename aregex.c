@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <gawkapi.h>
+#include <gawkextlib.h>
 #include <tre/tre.h>
 
 #define MAXNSUBMATCH 20 // Max Number of parenthetical substring matches
@@ -20,6 +20,47 @@
 static const gawk_api_t *api;
 static awk_ext_id_t ext_id;
 int plugin_is_GPL_compatible;
+
+/* regex hash table */
+static strhash *ht_regex;
+
+/* hash element destructor */
+static void
+he_data_destroy (void *data, void *opaque, strhash *ht, strhash_entry *he)
+{
+  if (he && he->data) {
+    tre_regfree (he->data);
+    gawk_free (he->data);
+    he->data = NULL;
+  }
+}
+
+/* look up regex in cache and create it if not found */
+static regex_t *
+tre_regex_lookup (const char* pattern, size_t pattern_len)
+{
+  strhash_entry * he;
+
+  he = strhash_get (ht_regex, pattern, pattern_len, 0);
+  if (!he) {
+    regex_t * rx;
+    size_t sz;
+    int rc;
+    int flags;
+    flags = REG_EXTENDED;
+    sz = sizeof (regex_t);
+    rx = gawk_calloc (1, sz);
+    rc = tre_regncomp (rx, pattern, pattern_len, flags);
+    if ( rc == REG_OK) {
+      he = strhash_get (ht_regex, pattern, pattern_len, 1); /* he ensured not to be NULL */
+      he->data = rx;
+    } else {
+      /* regexp compilation failed */
+      gawk_free (rx);
+    }
+  }
+  return he ? he->data : NULL;
+}
 
 
 // Main amatch() function definition
@@ -93,8 +134,8 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   //   swprintf(rew, strlen(re.str_value.str), L"%ls", re.str_value.str); )
 
   // 4. Compile regex
-  regex_t preg;
-  tre_regcomp(&preg, re.str_value.str, REG_EXTENDED);
+  regex_t *preg;
+  preg = tre_regex_lookup(re.str_value.str, re.str_value.len);
 
   // ( for wchar_t:
   //   tre_regwcomp(&preg, rew, REG_EXTENDED); )
@@ -119,7 +160,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
 
   // do the approx regexp itself!
   int treret;
-  treret = tre_regaexec(&preg, str.str_value.str, &match, params, 0);
+  treret = tre_regaexec(preg, str.str_value.str, &match, params, 0);
 
   // ( for wchar_t:
   //   treret = tre_regawexec(&pregw, rew, &match, params, 0); )
@@ -133,7 +174,6 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   if (treret == REG_ESPACE) {
     warning(ext_id,                                                     \
             "amatch: TRE err., mem. insufficient to complete the match.");
-    tre_regfree(&preg);
     return make_null_string(result);
   }
 
@@ -208,7 +248,6 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
     }
   }
 
-  tre_regfree(&preg);
   return make_number(rval, result);
 }
 
@@ -220,7 +259,23 @@ static awk_ext_func_t func_table[] = \
     { "amatch", do_amatch, 4, 2, awk_false, NULL  },
   };
 
-static awk_bool_t (*init_func)(void) = NULL;
+/* procedure run on exiting gawk and the extension */
+static void
+aregex_awk_atexit (void* data, int exit_status)
+{
+  strhash_destroy (ht_regex, he_data_destroy, NULL);
+}
+
+/* initialize extension */
+static awk_bool_t
+aregex_init_func (void)
+{
+  ht_regex = strhash_create (0);
+  awk_atexit (aregex_awk_atexit, NULL);
+  return awk_true;
+}
+
+static awk_bool_t (*init_func)(void) = aregex_init_func;
 
 static const char *ext_version = "0.1";
 
