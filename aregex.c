@@ -23,6 +23,9 @@ int plugin_is_GPL_compatible;
 
 /* regex hash table */
 static strhash *ht_regex;
+#ifdef AREGEX_MEM_DEBUG
+static int ht_regex_n_alloced = 0;
+#endif
 
 /* hash element destructor */
 static void
@@ -31,6 +34,9 @@ he_data_destroy (void *data, void *opaque, strhash *ht, strhash_entry *he)
   if (he && he->data) {
     tre_regfree (he->data);
     gawk_free (he->data);
+    #ifdef AREGEX_MEM_DEBUG
+    ht_regex_n_alloced -= sizeof(regex_t);
+    #endif
     he->data = NULL;
   }
 }
@@ -50,6 +56,9 @@ tre_regex_lookup (const char* pattern, size_t pattern_len)
     flags = REG_EXTENDED;
     sz = sizeof (regex_t);
     rx = gawk_calloc (1, sz);
+    #ifdef AREGEX_MEM_DEBUG
+    ht_regex_n_alloced += sz;
+    #endif
     rc = tre_regncomp (rx, pattern, pattern_len, flags);
     if ( rc == REG_OK) {
       he = strhash_get (ht_regex, pattern, pattern_len, 1); /* he ensured not to be NULL */
@@ -57,6 +66,9 @@ tre_regex_lookup (const char* pattern, size_t pattern_len)
     } else {
       /* regexp compilation failed */
       gawk_free (rx);
+      #ifdef AREGEX_MEM_DEBUG
+      ht_regex_n_alloced -= sz;
+      #endif
     }
   }
   return he ? he->data : NULL;
@@ -264,6 +276,10 @@ static void
 aregex_awk_atexit (void* data, int exit_status)
 {
   strhash_destroy (ht_regex, he_data_destroy, NULL);
+  #ifdef AREGEX_MEM_DEBUG
+  if(ht_regex_n_alloced)
+    warning(ext_id,"aregex: memory leakage: %d bytes", ht_regex_n_alloced);
+  #endif
 }
 
 /* initialize extension */
