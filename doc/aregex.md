@@ -76,7 +76,8 @@ indexes, the default values are used.
 ## Return value
 
 The **amatch()** function returns 1 on a successful
-match and 0 on a failure to match.
+match, 0 on a failure to match and -1 if _regex_ is invalid
+(with TRE's error message in _ERRNO_) .
 
 ## Obtaining match summary data 
 
@@ -133,7 +134,7 @@ BEGIN {
   regex = "^a(bc)d(ễ)(f)$"
   costs["max_cost"] = 6
   costs["cost_ins"] = 2
-  if (amatch(str, regex, costs, submatches))
+  if (amatch(str, regex, costs, submatches)>0)
     print costs["cost"], submatches[1]
 }    
 ```

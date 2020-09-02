@@ -65,6 +65,10 @@ tre_regex_lookup (const char* pattern, size_t pattern_len)
       he->data = rx;
     } else {
       /* regexp compilation failed */
+      char tre_err_buf[128], err_buf[256];
+      tre_regerror(rc, rx, tre_err_buf, sizeof tre_err_buf);
+      snprintf(err_buf, sizeof err_buf, "aregex: tre: %s in /%s/", tre_err_buf, pattern);
+      update_ERRNO_string(err_buf);
       gawk_free (rx);
       #ifdef AREGEX_MEM_DEBUG
       ht_regex_n_alloced -= sz;
@@ -148,6 +152,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
   // 4. Compile regex
   regex_t *preg;
   preg = tre_regex_lookup(re.str_value.str, re.str_value.len);
+  if(!preg) return make_number(-1, result);
 
   // ( for wchar_t:
   //   tre_regwcomp(&preg, rew, REG_EXTENDED); )

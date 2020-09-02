@@ -34,4 +34,7 @@ BEGIN {
   print "num_ins   : " cost["num_ins"]
   print "num_del   : " cost["num_del"]
   print "num_subst : " cost["num_subst"]
+
+  # check that amatch can handle invalid regex
+  if(-1 == amatch(str,"^(")) print ERRNO > "/dev/stderr"
 }
