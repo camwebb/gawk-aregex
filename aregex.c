@@ -117,7 +117,6 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
     else if (get_argument(2, AWK_ARRAY, &costs)) {
       hascostarr = 1;
 
-      char c[30];
       for (i = 0; i < 8; i++) {
         // create an index for reading array
         make_const_string(parami[i], strlen(parami[i]), &costindex);
@@ -127,9 +126,7 @@ static awk_value_t * do_amatch(int nargs, awk_value_t *result \
           // update the cost value
           paramv[i] = atoi(costval.str_value.str);
           if (DEBUG) {
-            strcpy(c,"") ;
-            sprintf(c, "cost %s = %d", parami[i], atoi(costval.str_value.str));
-            warning(ext_id, c);
+            warning(ext_id, "cost %s = %d", parami[i], atoi(costval.str_value.str));
           }
         }
       }
