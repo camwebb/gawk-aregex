@@ -16,7 +16,7 @@
 #define DEFMAXCOST 5    // Default max_cost for match
 #define DEBUG 0         // Print debug info
 
-#define PACKAGE_STRING    "0.1"
+#define PACKAGE_STRING    "aregex 1.0.1"
 
 // Gawkextlib boilerplate:
 static const gawk_api_t *api;
