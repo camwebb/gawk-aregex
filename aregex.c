@@ -16,6 +16,8 @@
 #define DEFMAXCOST 5    // Default max_cost for match
 #define DEBUG 0         // Print debug info
 
+#define PACKAGE_STRING    "0.1"
+
 // Gawkextlib boilerplate:
 static const gawk_api_t *api;
 static awk_ext_id_t ext_id;
@@ -291,16 +293,20 @@ aregex_awk_atexit (void* data, int exit_status)
 }
 
 /* initialize extension */
+static char ext_version[512];
+static void set_ext_version(void) {
+  snprintf(ext_version, sizeof ext_version, "%s (%s)", PACKAGE_STRING, tre_version());
+}
+
 static awk_bool_t
 aregex_init_func (void)
 {
   ht_regex = strhash_create (0);
   awk_atexit (aregex_awk_atexit, NULL);
+  set_ext_version();
   return awk_true;
 }
 
 static awk_bool_t (*init_func)(void) = aregex_init_func;
-
-static const char *ext_version = "0.1";
 
 dl_load_func(func_table, amatch, "")
