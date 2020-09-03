@@ -24,8 +24,10 @@ sed -i 's/AC_GAWK_EXTENSION/AC_GAWK_EXTENSION\n\nAC_CHECK_LIB([tre], [tre_regaex
 sed -i 's/BuildRequires:    gcc/BuildRequires:    gcc\nBuildRequires:    tre-devel/g' packaging/gawk-aregex.spec.in
 
 # Main code
-cp -f ../../../aregex.c .
-patch -i ../../aregex.c.patch aregex.c
+sed -e '/^#define PACKAGE_STRING / , /int plugin_is_GPL_compatible/c\
+#include "common.h"' \
+  -e 's|, struct awk_ext_func \*unused|API_FINFO_ARG|' \
+  ../../../aregex.c > aregex.c
 
 # Man page
 cp -f ../../../doc/aregex.3am doc

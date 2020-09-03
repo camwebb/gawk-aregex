@@ -24,8 +24,10 @@ cd aregex/
 sed -E -i "s/\ [0-9]+\.[0-9]+\.[0-9]+/ $VERSION/g" configure.ac
 
 # Change code files
-cp -f ../../../aregex.c .
-patch -i ../../aregex.c.patch aregex.c
+sed -e '/^#define PACKAGE_STRING / , /int plugin_is_GPL_compatible/c\
+#include "common.h"' \
+  -e 's|, struct awk_ext_func \*unused|API_FINFO_ARG|' \
+  ../../../aregex.c > aregex.c
 
 # Man page
 cp -f ../../../doc/aregex.3am doc
