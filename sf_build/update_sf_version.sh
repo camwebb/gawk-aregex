@@ -4,7 +4,7 @@
 
 # Define new version here:
 
-VERSION=1.0.1
+VERSION=1.1.0
 
 # Get new version of original repo
 rm -rf u-ctenolophon-gawkextlib
