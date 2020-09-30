@@ -1,5 +1,5 @@
 % AREGEX(3am) Free Software Foundation | GNU Awk Extension Modules
-% 
+%
 % Nov 24 2018
 
 # NAME
@@ -18,7 +18,7 @@ The TRE library (ref. below) provides approximate matching regex
 capabilities. A match between two strings that differ in some number
 of characters will be found when the cost of character insertions,
 deletions and substitutions does not exceed some specified maximum
-cost. For example, 
+cost. For example,
 
 ```
 "abcdef"
@@ -31,7 +31,7 @@ The cost of the match (the Levenshtein distance between strings)
 can be reported. This Gawk extension provides an interface with the
 _tre\_regaexec()_ function in the TRE library, permitting the setting
 of all possible parameters for that function, and returning all
-possible information about a match. 
+possible information about a match.
 
 ## Function summary
 
@@ -59,7 +59,7 @@ of the _regaparams\_t_ structure used by _tre\_regaexec()_:
 
 ```
 Array index   Parameter    Def val  Meaning
-============  ===========  =======  =====================     
+============  ===========  =======  =====================
 "cost_ins"    .cost_ins       1     Cost of one insertion
 "cost_del"    .cost_del       1     Cost of one deletion
 "cost_subst"  .cost_subst     1     Cost of one substitution
@@ -76,9 +76,10 @@ indexes, the default values are used.
 ## Return value
 
 The **amatch()** function returns 1 on a successful
-match and 0 on a failure to match.
+match, 0 on a failure to match and -1 if _regex_ is invalid
+(with TRE's error message in _ERRNO_) .
 
-## Obtaining match summary data 
+## Obtaining match summary data
 
 If a **third array argument** is provided to **amatch()**, and a match was
 successful, information about the match is returned via (clearing and)
@@ -87,7 +88,7 @@ filling members of the _costs_ array with these indexes:
 ```
 Array index   Meaning
 ============  ==============================================
-"cost"        Total cost of the match (Levenshtein distance)  
+"cost"        Total cost of the match (Levenshtein distance)
 "num_ins"     Total number of insertions
 "num_del"     Total number of deletions
 "num_subst"   Total number of substitutions
@@ -133,9 +134,9 @@ BEGIN {
   regex = "^a(bc)d(ễ)(f)$"
   costs["max_cost"] = 6
   costs["cost_ins"] = 2
-  if (amatch(str, regex, costs, submatches))
+  if (amatch(str, regex, costs, submatches)>0)
     print costs["cost"], submatches[1]
-}    
+}
 ```
 
 # SEE ALSO

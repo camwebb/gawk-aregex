@@ -4,7 +4,7 @@
 
 # Define new version here:
 
-VERSION=1.0.1
+VERSION=1.1.0
 
 # Get new version of original repo
 rm -rf u-ctenolophon-gawkextlib
@@ -24,8 +24,10 @@ cd aregex/
 sed -E -i "s/\ [0-9]+\.[0-9]+\.[0-9]+/ $VERSION/g" configure.ac
 
 # Change code files
-cp -f ../../../aregex.c .
-patch -i ../../aregex.c.patch aregex.c
+sed -e '/^#define PACKAGE_STRING / , /int plugin_is_GPL_compatible/c\
+#include "common.h"' \
+  -e 's|, struct awk_ext_func \*unused|API_FINFO_ARG|' \
+  ../../../aregex.c > aregex.c
 
 # Man page
 cp -f ../../../doc/aregex.3am doc
@@ -35,7 +37,7 @@ cp -f ../../webTOC .
 
 # Test files
 cp -f ../../../test/aregex.awk test
-sed -i 's|./aregex.so|../.libs/aregex.so|g' test/aregex.awk
+sed -i 's|./aregex|../.libs/aregex|g' test/aregex.awk
 # note: the gawkextlib test suite uses gawk with --characters-as-bytes
 cp -f ../../../test/aregex_b.ok test/aregex.ok
 
@@ -51,7 +53,7 @@ cp -f ../../SF_README.md README
 ## Build
 
 autoreconf -i
-./configure 
+./configure
 make
 make check
 
@@ -67,7 +69,7 @@ make check
 # git clone git://git.code.sf.net/u/ctenolophon/gawkextlib u-ctenolophon-gawkextlib
 # cd u-ctenolophon-gawkextlib/aregex/
 # autoreconf -i
-# ./configure 
+# ./configure
 # make
 # make check
 # cd ../..

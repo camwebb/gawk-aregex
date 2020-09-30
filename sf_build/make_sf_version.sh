@@ -24,8 +24,10 @@ sed -i 's/AC_GAWK_EXTENSION/AC_GAWK_EXTENSION\n\nAC_CHECK_LIB([tre], [tre_regaex
 sed -i 's/BuildRequires:    gcc/BuildRequires:    gcc\nBuildRequires:    tre-devel/g' packaging/gawk-aregex.spec.in
 
 # Main code
-cp -f ../../../aregex.c .
-patch -i ../../aregex.c.patch aregex.c
+sed -e '/^#define PACKAGE_STRING / , /int plugin_is_GPL_compatible/c\
+#include "common.h"' \
+  -e 's|, struct awk_ext_func \*unused|API_FINFO_ARG|' \
+  ../../../aregex.c > aregex.c
 
 # Man page
 cp -f ../../../doc/aregex.3am doc
@@ -36,7 +38,7 @@ git add webTOC
 
 # Test files
 cp -f ../../../test/aregex.awk test
-sed -i 's|./aregex.so|../.libs/aregex.so|g' test/aregex.awk
+sed -i 's|./aregex|../.libs/aregex|g' test/aregex.awk
 # note: the gawkextlib test suite uses gawk with --characters-as-bytes
 cp -f ../../../test/aregex_b.ok test/aregex.ok
 
@@ -65,7 +67,7 @@ make check
 # git clone git://git.code.sf.net/u/ctenolophon/gawkextlib u-ctenolophon-gawkextlib
 # cd u-ctenolophon-gawkextlib/aregex/
 # autoreconf -i
-# ./configure 
+# ./configure
 # make
 # make check
 # cd ../..
