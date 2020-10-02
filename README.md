@@ -84,7 +84,8 @@ positions and lengths of the substrings are needed:
  * Benjamin Eckel (@bhelx) for [this gist](https://gist.github.com/bhelx/1498622/e442385814e64625cc286ad3fa4ef9c0517ce785).
  * user sashoalm on StackOverflow for [this answer](https://stackoverflow.com/a/35200252/563709).
  * User Stefan on StackOverflow for [this answer](https://stackoverflow.com/a/17764716/563709).
+ * Jannick (Github: @jannick0) for major [enhancements](https://github.com/camwebb/gawk-aregex/commit/fde7ab8934f2c7b02b2cf51d09b6b5d711a488bb)
 
 ----
 
-Cam Webb <cw@camwebb.info>, 2018-11-24
+Cam Webb <cw@camwebb.info>, 2020-09-29

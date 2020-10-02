@@ -6,9 +6,9 @@ $(BASE)$(SHLIBEXT): $(BASE).c
 	gcc $(CFLAGS) -shared -Wall -Wextra -Wno-unused-parameter -Wmissing-prototypes -Wpointer-arith -Wcast-qual -Wwrite-strings -Wshadow -g -O2 -fPIC -o $@ $< -lgawkextlib -ltre
 
 check: $(BASE)$(SHLIBEXT) test/$(BASE).awk test/$(BASE).ok
-	gawk -f test/$(BASE).awk > test/$(BASE).tmp
-	bash -c "if [ -z `diff test/$(BASE).ok test/$(BASE).tmp` ] ; then echo '** PASS **'; else echo '** FAIL **' ; fi "
-	rm -f test/$(BASE).tmp
+	@gawk -f test/$(BASE).awk &> test/$(BASE).tmp 
+	@bash -c "if [ -z `diff test/$(BASE).ok test/$(BASE).tmp` ] ; then echo '** PASS **'; else echo '** FAIL **' ; fi "
+	@rm -f test/$(BASE).tmp
 
 install: $(BASE)$(SHLIBEXT) doc/$(BASE).3am
 	mkdir -p $(PREFIX)/lib/gawk
